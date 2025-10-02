@@ -5,9 +5,11 @@ export class Config {
   private static instance: Config | null = null;
 
   readonly PORT: Env["PORT"];
+  readonly DB_URL: Env["DB_URL"];
 
   private constructor(env: Env) {
     this.PORT = env.PORT;
+    this.DB_URL = env.DB_URL;
   }
 
   static get(): Config {

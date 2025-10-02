@@ -1,12 +1,13 @@
 import express, { type Express, type Request, type Response } from "express";
 import { Config } from "./config";
+import { initDb } from "./db/data-sources";
 
 export function Server(): Express {
   const app = express();
 
   app.use(express.json());
 
-  app.get("/health", (_req: Request, res: Response) => {
+  app.get("/health", (_req: Request, res: Response): void => {
     res.json({ ok: true });
   });
 
@@ -14,6 +15,7 @@ export function Server(): Express {
 }
 
 export async function start() {
+  await initDb();
   const cfg = Config.get();
   const app = Server();
 
