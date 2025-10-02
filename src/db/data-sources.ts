@@ -1,24 +1,15 @@
+import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Config } from "../config";
+import { Config } from "../config/index.js";
+import { User } from "./entities/user.entity.js";
+import { Product } from "./entities/product.entity.js";
 
-let ds: DataSource | null = null;
+const AppDataSource = new DataSource({
+  type: "postgres",
+  url: Config.get().DB_URL,
+  entities: [User, Product],
+  logging: false,
+  synchronize: true
+});
 
-export function getDS(): DataSource {
-  if (ds) return ds;
-  ds = new DataSource({
-    type: "postgres",
-    url: Config.get().DB_URL,
-    entities: [],
-    logging: false,
-    synchronize: true,
-  });
-
-  return ds;
-}
-
-export async function initDb() {
-  const d = getDS();
-  console.log(d.isInitialized)
-  if (!d.isInitialized) await d.initialize();
-}
-
+export default AppDataSource;
