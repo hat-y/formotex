@@ -1,33 +1,50 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
-import { Product } from "./product.entity";
+// Modulos Externos
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn, Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from "typeorm";
 
-enum RoleName {
-  "ADMIN",
-  "USER"
+// Modulos Internos
+import { DeviceAssignment } from "./device-assignment.entity";
+
+enum Role {
+  'ADMIN' = 'admin',
+  'USER' = 'user'
 }
 
-@Entity({ name: "user" })
+@Entity()
+@Index('uq_user_email', ['email'], { unique: true })
 export class User {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
+  @PrimaryGeneratedColumn('uuid') // v4
+  id!: string
 
-  @Column({ type: "varchar", length: 100 })
-  firstName!: string;
+  // ==== Columns ====
+  @Column({ type: 'varchar', length: 100 }) // email unique
+  email!: string
 
-  @Column({ type: "varchar", length: 100 })
-  lastName!: string;
+  @Column({ type: 'varchar', length: 100 })
+  passwordHash!: string
 
-  @Column({ type: "string" })
-  password!: string;
+  @Column({ type: 'varchar', length: 100 })
+  firstName!: string
 
-  @Column({ type: "enum", enum: RoleName, default: RoleName.USER })
-  role!: RoleName
+  @Column({ type: 'varchar', length: 100 })
+  lastName!: string
 
-  @OneToMany(() => Product, (product) => product.responsibleUser)
-  products!: Product[];
+  @Column({ type: "enum", enum: Role, default: Role.USER })
+  role!: Role
 
-  @CreateDateColumn() createdAt!: Date;
-  @UpdateDateColumn() updatedAt!: Date;
-  @DeleteDateColumn({ nullable: true }) deletedAt!: Date | null;
+  // ===== Dates Columns ====
+  @CreateDateColumn() createdAt!: Date
+  @UpdateDateColumn() updateDateColumn!: Date
+  @DeleteDateColumn({ nullable: false }) deleteDateColum?: Date | null
+
+  // ==== Relations Columns ===
+  @OneToMany(() => DeviceAssignment, a => a.user)
+  assignments!: DeviceAssignment[];
 }
-
