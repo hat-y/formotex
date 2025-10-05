@@ -9,6 +9,7 @@ import { Device } from "./entities/device.entity.js";
 import { DeviceAssignment } from "./entities/device-assignment.entity.js";
 import { StatusLabel } from "./entities/status-label.entity.js";
 import { DeviceModel } from "./entities/devices-model.entity.js";
+import { Invitation } from "./entities/invitation.entity.js";
 
 const cfg = Config.get()
 
@@ -21,6 +22,7 @@ const AppDataSource = new DataSource({
     DeviceModel,
     DeviceAssignment,
     StatusLabel,
+    Invitation,
   ],
   logging: cfg.LOG_LEVEL === 'debug' || cfg.LOG_LEVEL === 'trace',
   synchronize: true

@@ -5,7 +5,8 @@ import express, { Request, Response, type Express } from 'express';
 import { errorHandler } from './http/middlewares/error.js';
 import { logger } from './shared/logging/logger.js';
 import { httpLogger } from './shared/logging/http-logger.js';
-import usersRoutes from './http/routes/user.route.ts'
+import usersRoutes from './http/routes/user.route.js';
+import authRoutes from './http/routes/auth.route.js';
 
 export function Server(): Express {
   const app = express();
@@ -18,8 +19,14 @@ export function Server(): Express {
     res.json({ ok: true });
   });
 
+  // Test endpoint simple
+  app.get('/test', (_req: Request, res: Response): void => {
+    res.json({ message: 'Test endpoint working' });
+  });
+
   // === Routes === 
-  app.use('/api', usersRoutes);
+  app.use('/api', authRoutes);     // Rehabilitar auth para login
+  app.use('/api', usersRoutes);    // Rehabilitar ruta de usuarios
 
   app.use((_req: Request, res: Response) =>
     res.status(404).json({ error: 'Not found' }));

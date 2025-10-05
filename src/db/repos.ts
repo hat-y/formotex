@@ -1,4 +1,4 @@
-import { EntityManager, IsNull } from 'typeorm'; // <-- importa IsNull
+import { EntityManager, IsNull } from 'typeorm';
 import AppDataSource from './data-sources';
 import { Role, User } from './entities/user.entity';
 import { DeviceAssignment } from './entities/device-assignment.entity';

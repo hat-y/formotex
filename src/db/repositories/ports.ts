@@ -4,6 +4,7 @@ import { DeviceAssignment } from "../entities/device-assignment.entity";
 import { Device } from "../entities/device.entity";
 import { StatusLabel } from "../entities/status-label.entity";
 import { User } from "../entities/user.entity";
+import { Invitation } from "../entities/invitation.entity.js";
 
 // === Interface: User Repo ===
 
@@ -44,10 +45,22 @@ export interface IDeviceAssignmentRepo {
   save(assignments: DeepPartial<DeviceAssignment>): Promise<DeviceAssignment>;
 }
 
+// === Interface: Invitation Repo ===
+export interface IInvitationRepo {
+  create(data: Partial<Invitation>): Promise<Invitation>;
+  findByToken(token: string): Promise<Invitation | null>;
+  findByEmail(email: string): Promise<Invitation | null>;
+  findPendingByEmail(email: string): Promise<Invitation | null>;
+  markAsAccepted(token: string): Promise<void>;
+  markAsExpired(token: string): Promise<void>;
+  list(): Promise<Invitation[]>;
+}
+
 export type Repos = {
   users: IUserRepo;
   devices: IDeviceRepo;
   assignments: IDeviceAssignmentRepo;
   statusLabels: IStatusLabelRepo;
+  invitations: IInvitationRepo;
 };
 

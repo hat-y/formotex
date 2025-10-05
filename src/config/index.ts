@@ -8,11 +8,15 @@ export class Config {
   readonly PORT: Env['PORT'];
   readonly DB_URL: Env['DB_URL'];
   readonly LOG_LEVEL: Env['LOG_LEVEL'];
+  readonly JWT_SECRET: Env['JWT_SECRET']
+  readonly JWT_EXPIRES: Env['JWT_EXPIRES']
 
   private constructor(env: Env) {
     this.PORT = env.PORT;
     this.DB_URL = env.DB_URL;
     this.LOG_LEVEL = env.LOG_LEVEL;
+    this.JWT_EXPIRES = env.JWT_EXPIRES;
+    this.JWT_SECRET = env.JWT_SECRET;
   }
 
   static get(): Config {
