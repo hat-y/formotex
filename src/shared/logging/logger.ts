@@ -4,7 +4,7 @@ import { Config } from '../../config';
 const cfg = Config.get();
 const pretty = process.env.PRETTY_LOGS
   ? process.env.PRETTY_LOGS !== '0'
-  : process.stdout.isTTY; // terminal interactiva
+  : process.stdout.isTTY;
 
 export const logger = pino({
   level: cfg.LOG_LEVEL, // 'trace'|'debug'|'info'|'warn'|'error'|'fatal'
@@ -14,10 +14,14 @@ export const logger = pino({
       '*.password',
       'req.headers.authorization',
       'headers.authorization',
-      'body.password'
-    ],
+      'body.password'],
     remove: true,
   },
-  ...(pretty ? { transport: { target: 'pino-pretty', options: { singleLine: true, colorize: true } } } : {}),
+  ...(pretty ? {
+    transport: {
+      target: 'pino-pretty',
+      options: { singleLine: true, colorize: true }
+    }
+  } : {}),
 });
 

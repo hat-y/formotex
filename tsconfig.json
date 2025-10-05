@@ -10,7 +10,8 @@
     "useDefineForClassFields": false,
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true
   }
 }
 

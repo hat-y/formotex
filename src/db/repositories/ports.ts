@@ -8,12 +8,18 @@ import { User } from "../entities/user.entity";
 // === Interface: User Repo ===
 
 export interface IUserRepo {
-  save(user: User | Partial<User>): Promise<User>;
-  findByEmail(email: string): Promise<User | null>;
+  // C
+  create(data: DeepPartial<User>): Promise<User>;
+  save(user: Partial<User>): Promise<User>;
+  // R
   findById(id: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
   list(): Promise<User[]>;
+  // U
+  update(id: string, patch: DeepPartial<User>): Promise<User>;
+  // D
+  softDelete(id: string): Promise<void>;
 }
-
 // === Interface: Status Label Repo ===
 
 export interface IStatusLabelRepo {

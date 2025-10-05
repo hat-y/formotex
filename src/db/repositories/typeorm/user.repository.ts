@@ -1,4 +1,4 @@
-import { EntityManager } from "typeorm";
+import { DeepPartial, EntityManager } from "typeorm";
 import { IUserRepo } from "../ports";
 import { User } from "../../entities/user.entity";
 
@@ -7,6 +7,11 @@ export class UserRepo implements IUserRepo {
   private get repo() { return this.em.getRepository(User) }
 
   // === Create ===
+  async create(data: DeepPartial<User>): Promise<User> {
+    const u = this.repo.create(data);
+    return this.repo.save(u);
+  }
+
   save(user: User | Partial<User>): Promise<User> {
     return this.repo.save(user)
   }
@@ -26,4 +31,12 @@ export class UserRepo implements IUserRepo {
   }
 
   // === Update ===
+  update(id: string, patch: DeepPartial<User>) {
+    return this.repo.save({ id, ...patch });
+  }
+
+  // === Delete ===
+  async softDelete(id: string): Promise<void> {
+    await this.repo.softDelete(id);
+  }
 }

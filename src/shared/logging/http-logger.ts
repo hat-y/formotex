@@ -1,3 +1,4 @@
+// src/core/logging/http-logger.ts
 import pinoHttp from 'pino-http';
 import { randomUUID } from 'crypto';
 import { logger } from './logger';
