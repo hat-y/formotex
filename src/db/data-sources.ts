@@ -10,9 +10,11 @@ import { DeviceAssignment } from "./entities/device-assignment.entity.js";
 import { StatusLabel } from "./entities/status-label.entity.js";
 import { DeviceModel } from "./entities/devices-model.entity.js";
 
+const cfg = Config.get()
+
 const AppDataSource = new DataSource({
   type: "postgres",
-  url: Config.get().DB_URL,
+  url: cfg.DB_URL,
   entities: [
     User,
     Device,
@@ -20,7 +22,7 @@ const AppDataSource = new DataSource({
     DeviceAssignment,
     StatusLabel,
   ],
-  logging: true,
+  logging: cfg.LOG_LEVEL === 'debug' || cfg.LOG_LEVEL === 'trace',
   synchronize: true
 });
 
