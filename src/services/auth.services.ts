@@ -42,7 +42,7 @@ export class AuthService {
       passwordHash,
       firstName: dto.firstName,
       lastName: dto.lastName,
-      role: Role.USER,
+      role: dto.role ? (dto.role as Role) : Role.USER,
     });
   }
 }
