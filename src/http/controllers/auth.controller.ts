@@ -30,7 +30,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 export async function register(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const dto = RegisterSchema.parse(req.body);
-    const user = await auth.register(dto);
+    const user = await auth.register(dto.email, dto.password);
     res.status(201).json(toPublicUser(user));
 
   } catch (e) {

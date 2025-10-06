@@ -7,6 +7,11 @@ import { logger } from './shared/logging/logger.js';
 import { httpLogger } from './shared/logging/http-logger.js';
 import usersRoutes from './http/routes/user.route.js';
 import authRoutes from './http/routes/auth.route.js';
+import deviceRoutes from './http/routes/device.route.js';
+import deviceModelRoutes from './http/routes/device-model.route.js';
+import statusLabelRoutes from './http/routes/status-label.route.js';
+import deviceAssignmentRoutes from './http/routes/device-assignment.route.js';
+import { getSystemData } from './http/controllers/system.controller.js';
 
 export function Server(): Express {
   const app = express();
@@ -19,14 +24,14 @@ export function Server(): Express {
     res.json({ ok: true });
   });
 
-  // Test endpoint simple
-  app.get('/test', (_req: Request, res: Response): void => {
-    res.json({ message: 'Test endpoint working' });
-  });
+  app.get('/api/system', getSystemData);
 
-  // === Routes === 
-  app.use('/api', authRoutes);     // Rehabilitar auth para login
-  app.use('/api', usersRoutes);    // Rehabilitar ruta de usuarios
+  app.use('/api', authRoutes);     
+  app.use('/api', usersRoutes);    
+  app.use('/api', deviceRoutes);
+  app.use('/api', deviceModelRoutes);
+  app.use('/api/status-labels', statusLabelRoutes);
+  app.use('/api/assignments', deviceAssignmentRoutes);   
 
   app.use((_req: Request, res: Response) =>
     res.status(404).json({ error: 'Not found' }));

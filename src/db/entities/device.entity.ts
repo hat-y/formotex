@@ -31,6 +31,9 @@ export class Device {
   @Column({ type: 'jsonb', default: {} })
   specs!: Record<string, unknown>;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  location?: string | null; // Ubicación física actual
+
   @Column({ type: 'text', nullable: true })
   notes?: string | null;
 

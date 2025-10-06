@@ -1,4 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Device } from "./device.entity.js";
 
 export const STATUS_STATES = ['in_stock', 'in_use', 'repair', 'retired'] as const;
 export type StatusState = typeof STATUS_STATES[number];
@@ -22,4 +23,15 @@ export class StatusLabel {
 
   @Column({ type: 'boolean', default: false })
   isRetired!: boolean
+
+  // === Date Columns ===
+  @CreateDateColumn() 
+  createdAt!: Date;
+  
+  @UpdateDateColumn() 
+  updatedAt!: Date;
+
+  // === Relations Column ===
+  @OneToMany(() => Device, d => d.status)
+  devices!: Device[];
 }

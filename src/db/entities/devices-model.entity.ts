@@ -3,7 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   Unique,
-  OneToMany
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Device } from './device.entity';
 
@@ -22,6 +24,13 @@ export class DeviceModel {
 
   @Column({ type: 'varchar', length: 50 })
   category!: string;
+
+  // === Date Columns ===
+  @CreateDateColumn() 
+  createdAt!: Date;
+  
+  @UpdateDateColumn() 
+  updatedAt!: Date;
 
   // === Relations Column ===
   @OneToMany(() => Device, d => d.model)

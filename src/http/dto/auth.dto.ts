@@ -3,7 +3,7 @@ import { CreateUserSchema } from './user.dto.js';
 
 // Login
 export const LoginSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(8),
 });
 export type LoginInput = z.infer<typeof LoginSchema>;

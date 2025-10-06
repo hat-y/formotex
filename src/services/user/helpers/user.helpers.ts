@@ -1,6 +1,5 @@
 import AppDataSource from "../../../db/data-sources";
 import { Role, User } from "../../../db/entities/user.entity";
-import { UserRepo } from "../../../db/repositories/typeorm/user.repository";
 import { UpdateUserInput } from "../../../http/dto/user.dto";
 import { Errors } from "../../../shared/error/services-error";
 
@@ -9,7 +8,7 @@ export type Actor = { id: string; role: Role };
 /*
  *
  */
-export const userRepo = () => new UserRepo(AppDataSource.manager);
+export const userRepo = () => AppDataSource.getRepository(User);
 
 /*
  *
@@ -24,7 +23,7 @@ export const assertAdmin = (actor: Actor) => {
  *
  */
 export const getUserOr404 = async (id: string) => {
-  const user = await userRepo().findById(id);
+  const user = await userRepo().findOne({ where: { id } });
   if (!user) {
     throw Errors.notFound('Usuario no encontrado', 'USER_NOT_FOUND', { id });
   }
@@ -42,7 +41,7 @@ export const normalizeEmail = (raw: string) => raw.toLowerCase();
  */
 export const ensureUniqueEmail = async (raw: string, excludeId?: string) => {
   const email = normalizeEmail(raw);
-  const exists = await userRepo().findByEmail(email);
+  const exists = await userRepo().findOne({ where: { email } });
 
   if (exists && exists.id !== excludeId) {
     throw Errors.conflict('El email ya existe', 'EMAIL_TAKEN', { email });

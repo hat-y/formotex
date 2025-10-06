@@ -1,5 +1,5 @@
 import AppDataSource from '../db/data-sources.js';
-import { UserRepo } from '../db/repositories/typeorm/user.repository.js';
+import { User } from '../db/entities/user.entity.js';
 import { Errors } from '../shared/error/services-error.js';
 import { signJwt } from '../shared/auth/jwt.js';
 import { Argon2Hasher, type Hasher } from '../shared/crypto/hasher.js';
@@ -11,10 +11,10 @@ export class AuthService {
   constructor(private readonly hasher: Hasher = new Argon2Hasher()) { }
 
   async login(dto: LoginInput) {
-    const repo = new UserRepo(AppDataSource.manager);
+    const repo = AppDataSource.getRepository(User);
     const email = dto.email.toLowerCase();
 
-    const user = await repo.findByEmail(email);
+    const user = await repo.findOne({ where: { email } });
     if (!user) throw Errors.unauthorized('Credenciales inválidas', 'BAD_CREDENTIALS');
 
     const ok = await this.hasher.verify(user.passwordHash, dto.password);
@@ -29,21 +29,28 @@ export class AuthService {
     return { accessToken, user };
   }
 
-  async register(dto: RegisterInput) {
-    const repo = new UserRepo(AppDataSource.manager);
-    const email = dto.email.toLowerCase();
-    if (await repo.findByEmail(email)) {
-      throw Errors.conflict('El email ya existe', 'EMAIL_TAKEN', { email });
+  async register(email: string, password: string) {
+    const repo = AppDataSource.getRepository(User);
+    const existingUser = await repo.findOne({ where: { email } });
+
+    if (existingUser) {
+      throw Errors.conflict('Usuario ya existe', 'USER_EXISTS');
     }
 
-    const passwordHash = await this.hasher.hash(dto.password);
-    return repo.create({
+    const hasher = new Argon2Hasher();
+    const hashedPassword = await hasher.hash(password);
+    
+    const user = repo.create({
       email,
-      passwordHash,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      role: dto.role ? (dto.role as Role) : Role.USER,
+      passwordHash: hashedPassword,
+      firstName: 'Usuario',
+      lastName: 'Nuevo',
+      role: Role.USER
     });
+
+    const saved = await repo.save(user);
+    const { passwordHash: _, ...userWithoutPassword } = saved;
+    return userWithoutPassword;
   }
 }
 
