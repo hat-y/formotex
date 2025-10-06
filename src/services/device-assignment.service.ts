@@ -13,7 +13,6 @@ export class DeviceAssignmentService {
     ) {}
 
     async create(input: CreateDeviceAssignmentInput, createdById?: string) {
-        // Verificar que el dispositivo existe
         const device = await this.deviceRepo.findOne({ 
             where: { id: input.deviceId },
             relations: ['statusLabel']
@@ -22,7 +21,6 @@ export class DeviceAssignmentService {
             throw Errors.notFound('Device not found');
         }
 
-        // Verificar que el usuario existe
         const user = await this.userRepo.findOne({ 
             where: { id: input.userId } 
         });
@@ -30,7 +28,6 @@ export class DeviceAssignmentService {
             throw Errors.notFound('User not found');
         }
 
-        // Verificar que el dispositivo no está ya asignado
         const existingAssignment = await this.assignmentRepo.findOne({
             where: { 
                 device: { id: input.deviceId },
@@ -40,9 +37,6 @@ export class DeviceAssignmentService {
         if (existingAssignment) {
             throw Errors.badRequest('Device is already assigned to another user');
         }
-
-        // Nota: La verificación de si el dispositivo es desplegable se puede hacer en el frontend
-        // basándose en el statusLabel del dispositivo
 
         const startAt = input.startAt ? new Date(input.startAt) : new Date();
         
@@ -72,7 +66,6 @@ export class DeviceAssignmentService {
 
         const endAt = input.endAt ? new Date(input.endAt) : new Date();
         
-        // Verificar que endAt no sea anterior a startAt
         if (endAt < assignment.startAt) {
             throw Errors.badRequest('End date cannot be before start date');
         }
@@ -82,45 +75,26 @@ export class DeviceAssignmentService {
     }
 
     async getAll(filters: DeviceAssignmentFilters = {}) {
-        const queryBuilder = this.assignmentRepo
-            .createQueryBuilder('assignment')
-            .leftJoinAndSelect('assignment.device', 'device')
-            .leftJoinAndSelect('assignment.user', 'user')
-            .leftJoinAndSelect('assignment.createdBy', 'createdBy')
-            .leftJoinAndSelect('device.deviceModel', 'deviceModel')
-            .leftJoinAndSelect('device.statusLabel', 'statusLabel');
+        const where: any = {};
+        const relations = ['device', 'device.deviceModel', 'device.statusLabel', 'user', 'createdBy'];
 
-        // Filtros
         if (filters.deviceId) {
-            queryBuilder.andWhere('device.id = :deviceId', { deviceId: filters.deviceId });
+            where.device = { id: filters.deviceId };
         }
 
         if (filters.userId) {
-            queryBuilder.andWhere('user.id = :userId', { userId: filters.userId });
+            where.user = { id: filters.userId };
         }
 
-        if (filters.isActive !== undefined) {
-            if (filters.isActive) {
-                queryBuilder.andWhere('assignment.endAt IS NULL');
-            } else {
-                queryBuilder.andWhere('assignment.endAt IS NOT NULL');
-            }
+        if (filters.isActive === true) {
+            where.endAt = IsNull();
         }
-
-        if (filters.startDate) {
-            queryBuilder.andWhere('assignment.startAt >= :startDate', { 
-                startDate: new Date(filters.startDate) 
-            });
-        }
-
-        if (filters.endDate) {
-            queryBuilder.andWhere('assignment.startAt <= :endDate', { 
-                endDate: new Date(filters.endDate) 
-            });
-        }
-
-        queryBuilder.orderBy('assignment.startAt', 'DESC');
-        return await queryBuilder.getMany();
+        
+        return await this.assignmentRepo.find({
+            where,
+            relations,
+            order: { startAt: 'DESC' }
+        });
     }
 
     async getById(id: string) {
@@ -176,7 +150,6 @@ export class DeviceAssignmentService {
     async delete(id: string) {
         const assignment = await this.getById(id);
         
-        // Solo permitir eliminar asignaciones que no han iniciado o ya terminaron
         if (!assignment.endAt && assignment.startAt <= new Date()) {
             throw Errors.badRequest('Cannot delete an active assignment. End it first.');
         }

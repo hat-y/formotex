@@ -18,63 +18,53 @@ const userRepo = dataSource.getRepository(User);
 const assignmentService = new DeviceAssignmentService(assignmentRepo, deviceRepo, userRepo);
 const assignmentController = createDeviceAssignmentController(assignmentService);
 
-// Crear nueva asignación
 router.post('/', 
     authorizeRoles(Role.ADMIN),
     validateBody(CreateDeviceAssignmentSchema),
     (req, res, next) => assignmentController.create(req, res).catch(next)
 );
 
-// Listar todas las asignaciones
 router.get('/', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getAll(req, res).catch(next)
 );
 
-// Obtener asignación específica
 router.get('/:id', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getById(req, res).catch(next)
 );
 
-// Finalizar asignación (devolver dispositivo)
 router.put('/:id/end', 
     authorizeRoles(Role.ADMIN),
     validateBody(EndDeviceAssignmentSchema),
     (req, res, next) => assignmentController.endAssignment(req, res).catch(next)
 );
 
-// Eliminar asignación
 router.delete('/:id', 
     authorizeRoles(Role.ADMIN),
     (req, res, next) => assignmentController.delete(req, res).catch(next)
 );
 
-// Obtener asignación activa de un dispositivo
 router.get('/device/:deviceId/active', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getActiveByDevice(req, res).catch(next)
 );
 
-// Obtener asignaciones activas de un usuario
 router.get('/user/:userId/active', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getActiveByUser(req, res).catch(next)
 );
 
-// Historial de asignaciones de un dispositivo
 router.get('/device/:deviceId/history', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getDeviceHistory(req, res).catch(next)
 );
 
-// Historial de asignaciones de un usuario
 router.get('/user/:userId/history', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getUserHistory(req, res).catch(next)
 );
 
-// Listar solo asignaciones activas
 router.get('/active', 
     authorizeRoles(Role.ADMIN, Role.USER),
     (req, res, next) => assignmentController.getActiveAssignments(req, res).catch(next)

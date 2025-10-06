@@ -2,24 +2,24 @@ import { z } from 'zod';
 
 // Crear DeviceAssignment (asignar dispositivo a usuario)
 export const CreateDeviceAssignmentSchema = z.object({
-  deviceId: z.string().uuid(),
-  userId: z.string().uuid(),
-  startAt: z.string().datetime().optional(), // ISO string, default: now
+  deviceId: z.uuid(),
+  userId: z.uuid(),
+  startAt: z.iso.datetime().optional(), 
 });
 export type CreateDeviceAssignmentInput = z.infer<typeof CreateDeviceAssignmentSchema>;
 
 // Finalizar asignación (devolver dispositivo)
 export const EndDeviceAssignmentSchema = z.object({
-  endAt: z.string().datetime().optional(), // ISO string, default: now
+  endAt: z.iso.datetime().optional(),
 });
 export type EndDeviceAssignmentInput = z.infer<typeof EndDeviceAssignmentSchema>;
 
 // Filtros para búsqueda
 export const DeviceAssignmentFiltersSchema = z.object({
-  deviceId: z.string().uuid().optional(),
-  userId: z.string().uuid().optional(),
-  isActive: z.boolean().optional(), // true = asignaciones activas (endAt IS NULL)
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  deviceId: z.uuid().optional(),
+  userId: z.uuid().optional(),
+  isActive: z.boolean().optional(),
+  startDate: z.iso.datetime().optional(),
+  endDate: z.iso.datetime().optional(),
 });
 export type DeviceAssignmentFilters = z.infer<typeof DeviceAssignmentFiltersSchema>;
