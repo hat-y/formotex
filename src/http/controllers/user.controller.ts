@@ -10,7 +10,7 @@ interface AuthenticatedRequest extends Request {
 const service = new UserService();
 export const toPublicUser = (u: any) => {
   if (!u) return null;
-  
+
   return {
     id: u.id,
     email: u.email,

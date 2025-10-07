@@ -1,13 +1,16 @@
+// Modulos Externos
+import { IsNull } from 'typeorm';
+
+// Modulos Internos
 import AppDataSource from '../db/data-sources.js';
 import { Errors } from '../shared/error/services-error.js';
 import type { CreateDeviceInput, UpdateDeviceInput } from '../http/dto/device.dto.js';
 import { Device } from '../db/entities/device.entity.js';
 import { User } from '../db/entities/user.entity.js';
 import { DeviceAssignment } from '../db/entities/device-assignment.entity.js';
-import { IsNull } from 'typeorm';
 
 export class DeviceService {
-  
+
   async list() {
     const repo = AppDataSource.getRepository(Device);
     return repo.find({
@@ -21,17 +24,17 @@ export class DeviceService {
       where: { id },
       relations: ['model', 'status', 'currentResponsible']
     });
-    
+
     if (!device) {
       throw Errors.notFound('Device no encontrado', 'DEVICE_NOT_FOUND');
     }
-    
+
     return device;
   }
 
   async create(dto: CreateDeviceInput) {
     const repo = AppDataSource.getRepository(Device);
-    
+
     const existingByAsset = await repo.findOne({ where: { assetTag: dto.assetTag } });
     if (existingByAsset) {
       throw Errors.conflict('Asset tag ya existe', 'ASSET_TAG_EXISTS');
@@ -56,8 +59,6 @@ export class DeviceService {
       model: { id: dto.modelId },
       status: { id: dto.statusLabelId.toString() },
       location: dto.location,
-      purchaseDate: dto.purchaseDate,
-      warrantyUntil: dto.warrantyUntil,
       specs: dto.specs || {},
       notes: dto.notes,
       currentResponsible: dto.currentResponsibleId ? { id: dto.currentResponsibleId } : undefined
@@ -98,8 +99,6 @@ export class DeviceService {
       model: dto.modelId ? { id: dto.modelId } : device.model,
       status: dto.statusLabelId ? { id: dto.statusLabelId.toString() } : device.status,
       location: dto.location || device.location,
-      purchaseDate: dto.purchaseDate || device.purchaseDate,
-      warrantyUntil: dto.warrantyUntil || device.warrantyUntil,
       specs: dto.specs || device.specs,
       notes: dto.notes !== undefined ? dto.notes : device.notes,
       currentResponsible: dto.currentResponsibleId ? { id: dto.currentResponsibleId } : device.currentResponsible
@@ -111,12 +110,12 @@ export class DeviceService {
   async delete(id: string) {
     const repo = AppDataSource.getRepository(Device);
     const device = await this.getById(id);
-    
+
     const assignmentRepo = AppDataSource.getRepository(DeviceAssignment);
     const activeAssignment = await assignmentRepo.findOne({
       where: { device: { id }, endAt: IsNull() }
     });
-    
+
     if (activeAssignment) {
       throw Errors.conflict('No se puede eliminar un dispositivo con asignaciones activas', 'DEVICE_HAS_ASSIGNMENTS');
     }

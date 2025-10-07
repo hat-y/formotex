@@ -8,8 +8,6 @@ export const CreateDeviceSchema = z.object({
   statusLabelId: z.number().int().positive(),
   currentResponsibleId: z.string().uuid().optional(),
   location: z.string().max(100).optional(),
-  purchaseDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // YYYY-MM-DD
-  warrantyUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // YYYY-MM-DD
   specs: z.record(z.string(), z.unknown()).optional(),
   notes: z.string().optional(),
 });
@@ -23,8 +21,6 @@ export const UpdateDeviceSchema = z.object({
   statusLabelId: z.number().int().positive().optional(),
   currentResponsibleId: z.string().uuid().optional().nullable(),
   location: z.string().max(100).optional().nullable(),
-  purchaseDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
-  warrantyUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
   specs: z.record(z.string(), z.unknown()).optional(),
   notes: z.string().optional().nullable(),
 });

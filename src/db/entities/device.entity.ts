@@ -22,12 +22,6 @@ export class Device {
   @Column({ type: 'varchar', length: 128 })
   serialNumber!: string; // serie de fabricante
 
-  @Column({ type: 'date', nullable: true })
-  purchaseDate?: string | null;
-
-  @Column({ type: 'date', nullable: true })
-  warrantyUntil?: string | null;
-
   @Column({ type: 'jsonb', default: {} })
   specs!: Record<string, unknown>;
 

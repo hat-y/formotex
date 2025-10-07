@@ -20,13 +20,13 @@ async function seedStatusLabels() {
 
 async function seedAdmin() {
   const repo = AppDataSource.getRepository(User);
-  const email = 'admin@company.local';
+  const email = 'admin@admin.com';
   const exists = await repo.findOne({ where: { email } });
   if (exists) return;
 
   const admin = repo.create({
     email,
-    passwordHash: await argon2.hash('Admin#12345'),
+    passwordHash: await argon2.hash('Admin123'),
     firstName: 'System',
     lastName: 'Admin',
     role: Role.ADMIN,
