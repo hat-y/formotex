@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateDeviceSchema, UpdateDeviceSchema } from '../dto/device.dto.js';
 import { DeviceService } from '../../services/device.service';
-import { Role } from '../../db/entities/user.entity.js';
-
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; role: Role; email: string };
-}
 
 const deviceService = new DeviceService();
 
@@ -43,7 +38,7 @@ export const getDevice = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-export const createDevice = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const createDevice = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dto = CreateDeviceSchema.parse(req.body);
     const device = await deviceService.create(dto);
@@ -53,7 +48,7 @@ export const createDevice = async (req: AuthenticatedRequest, res: Response, nex
   }
 };
 
-export const updateDevice = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const updateDevice = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dto = UpdateDeviceSchema.parse(req.body);
     const device = await deviceService.update(req.params.id, dto);
@@ -63,7 +58,7 @@ export const updateDevice = async (req: AuthenticatedRequest, res: Response, nex
   }
 };
 
-export const deleteDevice = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const deleteDevice = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await deviceService.delete(req.params.id);
     res.json(result);

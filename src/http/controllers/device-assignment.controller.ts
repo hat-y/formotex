@@ -1,14 +1,10 @@
 import { Request, Response } from 'express';
 import { DeviceAssignmentService } from '../../services/device-assignment.service';
 
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; role: string; email: string };
-}
-
 export class DeviceAssignmentController {
   constructor(private assignmentService: DeviceAssignmentService) { }
 
-  async create(req: AuthenticatedRequest, res: Response) {
+  async create(req: Request, res: Response) {
     const createdById = req.user?.id;
     const assignment = await this.assignmentService.create(req.body, createdById);
     res.status(201).json({

@@ -1,8 +1,10 @@
 import { Role } from '../db/entities/user.entity.js';
 
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: { id: string; role: Role; email: string };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { id: string; role: Role; email: string };
+    }
   }
 }
 

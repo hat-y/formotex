@@ -1,11 +1,6 @@
 import { type RequestHandler, type Request } from 'express';
 import { UserService } from '../../services/user/user.service.js';
 import { CreateUserSchema, UpdateUserSchema } from '../dto/user.dto.js';
-import { Role } from '../../db/entities/user.entity.js';
-
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; role: Role; email: string };
-}
 
 const service = new UserService();
 export const toPublicUser = (u: any) => {
@@ -36,7 +31,7 @@ export const getUser: RequestHandler = async (req, res, next) => {
   catch (e) { next(e); }
 };
 
-export const createUser: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+export const createUser: RequestHandler = async (req, res, next) => {
   try {
     const dto = CreateUserSchema.parse(req.body);
     const created = await service.create(dto, req.user!);
@@ -44,7 +39,7 @@ export const createUser: RequestHandler = async (req: AuthenticatedRequest, res,
   } catch (e) { next(e); }
 };
 
-export const updateUser: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+export const updateUser: RequestHandler = async (req, res, next) => {
   try {
     const dto = UpdateUserSchema.parse(req.body);
     const updated = await service.update(req.params.id, dto, req.user!);
@@ -52,7 +47,7 @@ export const updateUser: RequestHandler = async (req: AuthenticatedRequest, res,
   } catch (e) { next(e); }
 };
 
-export const deleteUser: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+export const deleteUser: RequestHandler = async (req, res, next) => {
   try { await service.remove(req.params.id, req.user!); res.status(204).send(); }
   catch (e) { next(e); }
 };

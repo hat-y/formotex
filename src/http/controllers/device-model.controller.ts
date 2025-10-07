@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateDeviceModelSchema, UpdateDeviceModelSchema } from '../dto/device-model.dto.js';
 import { DeviceModelService } from '../../services/device-model.service.js';
-import { Role } from '../../db/entities/user.entity.js';
-
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; role: Role; email: string };
-}
 
 const deviceModelService = new DeviceModelService();
 
@@ -27,7 +22,7 @@ export const getDeviceModel = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const createDeviceModel = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const createDeviceModel = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dto = CreateDeviceModelSchema.parse(req.body);
     const model = await deviceModelService.create(dto);
@@ -37,7 +32,7 @@ export const createDeviceModel = async (req: AuthenticatedRequest, res: Response
   }
 };
 
-export const updateDeviceModel = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const updateDeviceModel = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dto = UpdateDeviceModelSchema.parse(req.body);
     const model = await deviceModelService.update(req.params.id, dto);
@@ -47,7 +42,7 @@ export const updateDeviceModel = async (req: AuthenticatedRequest, res: Response
   }
 };
 
-export const deleteDeviceModel = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const deleteDeviceModel = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await deviceModelService.delete(req.params.id);
     res.json(result);

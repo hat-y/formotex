@@ -1,13 +1,8 @@
 import { type RequestHandler, type Request } from 'express';
 import { verifyJwt } from './jwt.js';
 import { Errors } from '../error/services-error.js';
-import { Role } from '../../db/entities/user.entity.js';
 
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; role: Role; email: string };
-}
-
-export const authenticateJwt = (): RequestHandler => (req: AuthenticatedRequest, _res, next) => {
+export const authenticateJwt = (): RequestHandler => (req: Request, _res, next) => {
   const h = req.headers.authorization;
   
   if (!h?.startsWith('Bearer ')) {
