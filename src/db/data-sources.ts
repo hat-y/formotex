@@ -14,7 +14,11 @@ const cfg = Config.get()
 
 const AppDataSource = new DataSource({
   type: "postgres",
-  url: cfg.DB_URL,
+  host: cfg.DB_HOST,
+  port: cfg.DB_PORT,
+  username: cfg.DB_USER,
+  password: cfg.DB_PASSWORD,
+  database: cfg.DB_NAME,
   entities: [
     User,
     Device,

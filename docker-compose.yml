@@ -5,10 +5,24 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: inventario
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: inventario
+      DB_PORT: 5432
+    depends_on:
+      - db
+    command: sh -c "npm install -g nodemon && nodemon --watch . src/index.ts"
 volumes:
   pgdata:
 

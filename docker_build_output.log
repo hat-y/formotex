@@ -1,0 +1,33 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 258B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.7s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 34B done
+#3 DONE 0.0s
+
+#4 [1/7] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#4 resolve docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48 0.0s done
+#4 DONE 0.0s
+
+#5 [2/7] WORKDIR /app
+#5 CACHED
+
+#6 [3/7] RUN npm install -g pnpm
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 59.48MB 5.0s
+#7 transferring context: 78.62MB 5.9s done
+#7 ERROR: invalid file request node_modules/.pnpm/@cspotcode+source-map-support@0.8.1/node_modules/@jridgewell/trace-mapping
+------
+ > [internal] load build context:
+------
+ERROR: failed to build: failed to solve: invalid file request node_modules/.pnpm/@cspotcode+source-map-support@0.8.1/node_modules/@jridgewell/trace-mapping
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/x9nlun8seskex94v6yc78svtc
